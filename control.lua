@@ -3,5 +3,5 @@
 -- ============================================================= --
 
 require("silo-script")
-require("locale/player-spawn-settings")
-require("locale/rocket")
+require("locale/FSM-modules/Vanilla/player-spawn-settings")
+require("locale/FSM-modules/Vanilla/rocket")
