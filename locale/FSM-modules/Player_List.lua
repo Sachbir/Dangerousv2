@@ -5,6 +5,9 @@
 -- ============================================================= --
 
 Color = require("locale/FSM-core/util/Colors")
+GUI = require("locale/FSM-core/util/GUI")
+-- RPG = 
+require("locale/FSM-modules/RPG")
 
 local Owner = "UberJuice"
 -- local Partners = {
@@ -44,7 +47,7 @@ end)
 script.on_event(defines.events.on_gui_click, function(event)
     local player = game.players[event.player_index]
     if event.element.name == "player_list_btn" then
-        GUI.toggle_element("player_list_frame")
+        GUI.toggle_element(player.gui.left["player_list_frame"])
     end 
 end)
 
@@ -62,15 +65,22 @@ function draw_player_list_frame()
             player.gui.left.player_list_frame.clear()
         end
         if player.admin then
-            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 4 }
+            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 5 }  
+            player.gui.left["player_list_frame"].player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
+            player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
+            add_3_blanks(player)
             for j,list_player in pairs(game.connected_players) do
                 -- Player_Rank.Update_Rank(item)    -- For future when Ranks are implemented
+                RPG.update_level(player)
                 add_to_player_list_for_admins(player, list_player)
             end
         else -- For non-admins
-            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 1 }
+            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 2 }
+            player.gui.left["player_list_frame"].player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
+            player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
             for k,list_player in pairs(game.connected_players) do
                 -- Player_Rank.Update_Rank(item)    -- For future when Ranks are implemented
+                RPG.update_level(player)
                 add_to_player_list(player, list_player)
             end
         end
@@ -82,6 +92,7 @@ end
 -- @param list_player   The player being added to the list
 function add_to_player_list(player, list_player)
     local player_list_table = player.gui.left.player_list_frame.player_list_table
+    player_list_table.add { type = "label", caption = "[Level " .. Player_Data.data[player.name].level .. "]" }     
     if list_player.name == Owner then
         player_list_table.add { type = "label", name = list_player.name, caption = list_player.name .. " | Owner" }
     elseif list_player.admin then
@@ -96,16 +107,13 @@ end
 -- @param list_player   The player being added to the list
 function add_to_player_list_for_admins(player, list_player)
     local player_list_table = player.gui.left.player_list_frame.player_list_table    
-    -- Header
-    player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
-    -- player_list_table.Player_Header.style.font_color = Color.orange
-    add_3_blanks(player, data)
+    player_list_table.add { type = "label", caption = "[Level " .. Player_Data.data[player.name].level .. "]" }     
     if list_player.name == Owner then
         add_label_to_table(player, list_player.name .. " | Owner")
-        add_3_blanks(player, data)
+        add_3_blanks(player)
     elseif list_player.admin then
         add_label_to_table(player, list_player.name .. " | Admin")
-        add_3_blanks(player, data)
+        add_3_blanks(player)
     else
         add_label_to_table(player, list_player.name)  
         add_sprite_to_table(player, list_player, "grenade")
@@ -128,10 +136,10 @@ function add_sprite_to_table(player, list_player, sprite_name)
     end 
 end 
 
-function add_3_blanks(player, data)
-    add_label_to_table(player, data)
-    add_label_to_table(player, data)
-    add_label_to_table(player, data)
+function add_3_blanks(player)
+    add_label_to_table(player, "")
+    add_label_to_table(player, "")
+    add_label_to_table(player, "")
 end
 
 script.on_event(defines.events.on_tick, function(event)
