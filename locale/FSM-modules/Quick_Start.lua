@@ -33,6 +33,7 @@ script.on_event(defines.events.on_player_created, function(event)
     player.insert{name="battery-equipment", count = 1}
     player.insert{name="solar-panel-equipment", count = 19}
     player.insert{name="construction-robot", count = 20}
+    player.insert{name="deconstruction-planner", count = 1}
   end
   
   -- List of items to give a player on respawn

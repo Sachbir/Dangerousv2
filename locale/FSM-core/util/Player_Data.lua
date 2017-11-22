@@ -7,11 +7,13 @@
 -- Import logged data once implemented
 
 Player_Data = {}
-Player_Data.data = {}
+
+global.Player_Data = {}
+global.Player_Data.data = {}
 
 function Player_Data.register(player)
-    if Player_Data.data[player.name] == nil then
-        Player_Data.data[player.name] = {
+    if global.Player_Data.data[player.name] == nil then
+        global.Player_Data.data[player.name] = {
             games_played = 1, 
             logged_time = 0, 
             level = 0, 

@@ -6,7 +6,6 @@
 
 Color = require("locale/FSM-core/util/Colors")
 GUI = require("locale/FSM-core/util/GUI")
--- RPG = 
 require("locale/FSM-modules/RPG")
 
 local Owner = "UberJuice"
@@ -53,7 +52,9 @@ end)
 
 function draw_player_list_button(player)
     if player.gui.top["player_list_btn"] == nil then
-        player.gui.top.add{type = "button", name = "player_list_btn", caption = "Player List" }
+        player.gui.top.add{ name = "player_list_btn", type = "sprite-button", sprite = "item/power-armor-mk2" }
+        player.gui.top.player_list_btn.style.minimal_width = 41
+        player.gui.top.player_list_btn.style.minimal_height = 41        
     end 
 end 
 
@@ -70,8 +71,7 @@ function draw_player_list_frame()
             player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
             add_3_blanks(player)
             for j,list_player in pairs(game.connected_players) do
-                -- Player_Rank.Update_Rank(item)    -- For future when Ranks are implemented
-                RPG.update_level(player)
+                RPG.update_level(list_player)
                 add_to_player_list_for_admins(player, list_player)
             end
         else -- For non-admins
@@ -79,8 +79,7 @@ function draw_player_list_frame()
             player.gui.left["player_list_frame"].player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
             player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
             for k,list_player in pairs(game.connected_players) do
-                -- Player_Rank.Update_Rank(item)    -- For future when Ranks are implemented
-                RPG.update_level(player)
+                RPG.update_level(list_player)
                 add_to_player_list(player, list_player)
             end
         end
@@ -92,7 +91,7 @@ end
 -- @param list_player   The player being added to the list
 function add_to_player_list(player, list_player)
     local player_list_table = player.gui.left.player_list_frame.player_list_table
-    player_list_table.add { type = "label", caption = "[Level " .. Player_Data.data[player.name].level .. "]" }     
+    player_list_table.add { type = "label", caption = "[Level " .. global.Player_Data.data[list_player.name].level .. "]" }     
     if list_player.name == Owner then
         player_list_table.add { type = "label", name = list_player.name, caption = list_player.name .. " | Owner" }
     elseif list_player.admin then
@@ -107,7 +106,7 @@ end
 -- @param list_player   The player being added to the list
 function add_to_player_list_for_admins(player, list_player)
     local player_list_table = player.gui.left.player_list_frame.player_list_table    
-    player_list_table.add { type = "label", caption = "[Level " .. Player_Data.data[player.name].level .. "]" }     
+    player_list_table.add { type = "label", caption = "[Level " .. global.Player_Data.data[list_player.name].level .. "]" }     
     if list_player.name == Owner then
         add_label_to_table(player, list_player.name .. " | Owner")
         add_3_blanks(player)
