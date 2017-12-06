@@ -61,7 +61,7 @@ end
 function draw_player_list_frame()
     for i,player in pairs(game.connected_players) do
         if player.gui.left["player_list_frame"] == nil then
-            player.gui.left.add { type = "frame", name = "player_list_frame", direciton = "vertical" }
+            player.gui.left.add { type = "frame", name = "player_list_frame", direction = "vertical" }
         else 
             player.gui.left.player_list_frame.clear()
         end
