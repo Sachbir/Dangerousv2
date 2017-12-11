@@ -60,24 +60,27 @@ end
 
 function draw_player_list_frame()
     for i,player in pairs(game.connected_players) do
-        if player.gui.left["player_list_frame"] == nil then
+        if player.gui.left.player_list_frame == nil then
             player.gui.left.add { type = "frame", name = "player_list_frame", direction = "vertical" }
         else 
             player.gui.left.player_list_frame.clear()
         end
-        if player.admin then
-            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 5 }  
-            player.gui.left["player_list_frame"].player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
-            player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
+        player.gui.left.player_list_frame.add { type = "scroll-pane", name = "scroll_pane", direction = "vertical", vertical_scroll_policy = "auto" }        
+        local player_list_frame = player.gui.left.player_list_frame.scroll_pane
+        player_list_frame.style.maximal_height = 25*11
+        if player.admin then    -- For admins
+            player_list_frame.add { type = "table", name = "player_list_table", colspan = 5 }  
+            player_list_frame.player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
+            player_list_frame.player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
             add_3_blanks(player)
             for j,list_player in pairs(game.connected_players) do
                 RPG.update_level(list_player)
                 add_to_player_list_for_admins(player, list_player)
             end
-        else -- For non-admins
-            player.gui.left["player_list_frame"].add { type = "table", name = "player_list_table", colspan = 2 }
-            player.gui.left["player_list_frame"].player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
-            player.gui.left["player_list_frame"].player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
+        else                    -- For non-admins
+            player_list_frame.add { type = "table", name = "player_list_table", colspan = 2 }
+            player_list_frame.player_list_table.add { type = "label", caption = "Level", style = "caption_label_style" }
+            player_list_frame.player_list_table.add { type = "label", name = "Player_Header", caption = "Players", style = "caption_label_style" }
             for k,list_player in pairs(game.connected_players) do
                 RPG.update_level(list_player)
                 add_to_player_list(player, list_player)
@@ -90,7 +93,7 @@ end
 -- @param player        The player for whom the player list is drawn
 -- @param list_player   The player being added to the list
 function add_to_player_list(player, list_player)
-    local player_list_table = player.gui.left.player_list_frame.player_list_table
+    local player_list_table = player.gui.left.player_list_frame.scroll_pane.player_list_table
     player_list_table.add { type = "label", caption = "[Level " .. global.Player_Data.data[list_player.name].level .. "]" }     
     if list_player.name == Owner then
         player_list_table.add { type = "label", name = list_player.name, caption = list_player.name .. " | Owner" }
@@ -105,7 +108,7 @@ end
 -- @param player        The player for whom the player list is drawn
 -- @param list_player   The player being added to the list
 function add_to_player_list_for_admins(player, list_player)
-    local player_list_table = player.gui.left.player_list_frame.player_list_table    
+    local player_list_table = player.gui.left.player_list_frame.scroll_pane.player_list_table    
     player_list_table.add { type = "label", caption = "[Level " .. global.Player_Data.data[list_player.name].level .. "]" }     
     if list_player.name == Owner then
         add_label_to_table(player, list_player.name .. " | Owner")
@@ -123,18 +126,20 @@ end
 
 --@param player     Player for whom the table is written
 function add_label_to_table(player, data)
-    player.gui.left.player_list_frame.player_list_table.add { type = "label", caption = data }
+    player.gui.left.player_list_frame.scroll_pane.player_list_table.add { type = "label", caption = data }
 end
 
 --@param player     Player for whom the table is written
 function add_sprite_to_table(player, list_player, sprite_name)
     if list_player.get_item_count(sprite_name) > 0 then
-        player.gui.left.player_list_frame.player_list_table.add { type = "sprite", sprite = "item/" .. sprite_name } 
+        player.gui.left.player_list_frame.scroll_pane.player_list_table.add { type = "sprite", sprite = "item/" .. sprite_name } 
     else 
         add_label_to_table(player, "")
     end 
 end 
 
+-- Creates 3 blank elements in the Player List table for formatting purposes
+-- @param player    LuaPlayer for whom the list is rendered
 function add_3_blanks(player)
     add_label_to_table(player, "")
     add_label_to_table(player, "")

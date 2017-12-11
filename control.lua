@@ -8,3 +8,4 @@ require("locale/FSM-modules/Quick_Start")                           -- conflicts
 require("locale/FSM-modules/Vanilla/rocket")
 require("locale/FSM-modules/Player_List")
 -- require("locale/FSM-modules/Logger")                             -- module incomplete; causes crash
+require("locale/FSM-modules/Moderator_Panel")
